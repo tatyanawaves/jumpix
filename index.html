@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumpix - Неоновая аркадная игра</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: #0d0221;
+            color: #e0d1ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Анимированный фон */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d9ff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 10px #00d9ff, 0 0 20px #00d9ff;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Контейнер */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Заголовок */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff00ff, #00d9ff, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 0 0px rgba(255, 0, 255, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #00d9ff;
+            text-shadow: 0 0 20px #00d9ff;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+
+        /* Кнопки */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            color: #ff00ff;
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+
+        .btn-primary:hover {
+            background: #ff00ff;
+            color: #0d0221;
+            box-shadow: 0 0 40px #ff00ff, inset 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            color: #00d9ff;
+            border-color: #00d9ff;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: #00d9ff;
+            color: #0d0221;
+            box-shadow: 0 0 40px #00d9ff, inset 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Секции */
+        section {
+            margin: 80px 0;
+            padding: 40px;
+            background: rgba(13, 2, 33, 0.6);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: #00d9ff;
+            text-shadow: 0 0 20px #00d9ff;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+            margin: 30px 0 15px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #e0d1ff;
+        }
+
+        /* Особенности */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            background: rgba(255, 0, 255, 0.1);
+            border: 2px solid rgba(255, 0, 255, 0.3);
+            border-radius: 15px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 0, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+            border-color: #ff00ff;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            color: #00d9ff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00d9ff;
+        }
+
+        /* Видео */
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .video-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+            transition: all 0.3s;
+            background: #0d0221;
+            cursor: pointer;
+            aspect-ratio: 9/16;
+        }
+
+        .video-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.6);
+            border-color: #00d9ff;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 96%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Список */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.1rem;
+        }
+
+        li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 80px;
+            border-top: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .footer-links a {
+            color: #00d9ff;
+            text-decoration: none;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px #00d9ff;
+        }
+
+        .footer-links a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Неоновое свечение для текста */
+        .glow-text {
+            text-shadow: 0 0 7px currentColor, 0 0 17px currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="glow-text">Jumpix</h1>
+            <p class="subtitle">Неоновая аркадная игра</p>
+            <div class="cta-buttons">
+                <a href="https://play.google.com/store/apps/details?id=com.glowjumper.game" class="btn btn-primary" target="_blank">Скачать в Google Play</a>
+                <a href="privacy_policy.html" class="btn btn-secondary">Политика конфиденциальности</a>
+            </div>
+        </header>
+
+        <section id="about">
+            <h2>О игре</h2>
+            <p>
+                <strong>Jumpix</strong> — это захватывающая аркадная игра в неоновом стиле, где вы управляете светящимся шариком, 
+                прыгая по платформам и собирая бонусы. Преодолевайте препятствия, набирайте очки и проходите 30 уникальных уровней!
+            </p>
+            <p>
+                Игра выполнена в ярком неоновом стиле с эффектами свечения, что создает неповторимую атмосферу космического приключения.
+            </p>
+        </section>
+
+        <section id="features">
+            <h2>Особенности</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <span class="feature-icon">🎮</span>
+                    <h3 class="feature-title">30 Уровней</h3>
+                    <p>30 уникальных уровней с различными механиками и препятствиями. Каждый уровень — новое испытание!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Бесконечный режим</h3>
+                    <p>Режим Nonstop для тех, кто хочет проверить свои навыки и побить рекорды!</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💎</span>
+                    <h3 class="feature-title">Бонусы и щиты</h3>
+                    <p>Собирайте бонусы для получения щитов, замедления времени и других полезных эффектов.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3 class="feature-title">Неоновый стиль</h3>
+                    <p>Яркая неоновая графика с эффектами свечения создает неповторимую визуальную атмосферу.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎵</span>
+                    <h3 class="feature-title">Музыка</h3>
+                    <p>Захватывающая фоновая музыка, которая создает атмосферу космического приключения.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3 class="feature-title">Рекорды</h3>
+                    <p>Сохраняйте свои лучшие результаты и соревнуйтесь с самим собой!</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="gameplay">
+            <h2>Геймплей</h2>
+            <h3>Управление</h3>
+            <ul>
+                <li>Тап/клик слева от шарика — движение влево</li>
+                <li>Тап/клик справа от шарика — движение вправо</li>
+                <li>Escape — пауза</li>
+            </ul>
+
+            <h3>Механика</h3>
+            <ul>
+                <li>Прыгайте по платформам, чтобы подняться выше</li>
+                <li>Избегайте шипов — они заставят начать уровень заново</li>
+                <li>Собирайте бонусы для получения щитов и других эффектов</li>
+                <li>Некоторые платформы могут быть разрушаемыми или мигающими</li>
+                <li>На некоторых уровнях гравитация может меняться!</li>
+            </ul>
+
+            <h3>Типы платформ</h3>
+            <ul>
+                <li><span style="color: #00d9ff;">Синие платформы</span> — обычные стабильные платформы</li>
+                <li><span style="color: #FF4500;">Оранжевые платформы</span> — разрушаются после использования</li>
+                <li><span style="color: #9D4EDD;">Фиолетовые платформы</span> — мигают, появляясь и исчезая</li>
+                <li><span style="color: #FF6B35;">Вращающиеся платформы</span> — вращаются вокруг своей оси</li>
+                <li><span style="color: #FF00FF;">Гравитационные платформы</span> — меняют направление гравитации</li>
+            </ul>
+        </section>
+
+        <section id="screenshots">
+            <h2>Видео геймплея</h2>
+            <div class="screenshots">
+                <div class="video-container">
+                    <video muted loop playsinline preload="none">
+                        <source src="video/1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video muted loop playsinline preload="none">
+                        <source src="video/2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video muted loop playsinline preload="none">
+                        <source src="video/3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video muted loop playsinline preload="none">
+                        <source src="video/4.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section id="download">
+            <h2>Скачать игру</h2>
+            <p style="text-align: center; font-size: 1.3rem; margin: 30px 0;">
+                Игра доступна в <strong style="color: #00d9ff;">Google Play</strong>
+            </p>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://play.google.com/store/apps/details?id=com.glowjumper.game" class="btn btn-primary" target="_blank" style="font-size: 1.5rem; padding: 20px 50px;">
+                    Скачать сейчас
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Jumpix. Все права защищены.</p>
+            <div class="footer-links">
+                <a href="privacy_policy.html">Политика конфиденциальности</a>
+                <a href="mailto:support@glowjumper.app">Поддержка</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Создание звезд на фоне
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        createStars();
+
+        // Плавная прокрутка для якорных ссылок
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Управление видео при наведении (оптимизированная версия)
+        const videoContainers = document.querySelectorAll('.video-container');
+        let hoverTimeout;
+        
+        videoContainers.forEach((container, index) => {
+            const video = container.querySelector('video');
+            if (!video) return;
+            
+            let isPlaying = false;
+            let isHovered = false;
+            
+            // Оптимизация: загружаем видео только при первом наведении
+            let isLoaded = false;
+            
+            // Воспроизведение при наведении
+            container.addEventListener('mouseenter', () => {
+                isHovered = true;
+                
+                // Загружаем видео только при первом наведении
+                if (!isLoaded) {
+                    video.load();
+                    isLoaded = true;
+                }
+                
+                // Небольшая задержка перед воспроизведением для оптимизации
+                hoverTimeout = setTimeout(() => {
+                    if (isHovered && !isPlaying) {
+                        video.currentTime = 0;
+                        const playPromise = video.play();
+                        
+                        if (playPromise !== undefined) {
+                            playPromise
+                                .then(() => {
+                                    isPlaying = true;
+                                })
+                                .catch(error => {
+                                    console.error('Ошибка воспроизведения:', error);
+                                });
+                        }
+                    }
+                }, 100);
+            });
+            
+            // Пауза при уходе курсора
+            container.addEventListener('mouseleave', () => {
+                isHovered = false;
+                clearTimeout(hoverTimeout);
+                
+                if (isPlaying) {
+                    video.pause();
+                    video.currentTime = 0;
+                    isPlaying = false;
+                }
+            });
+            
+            // Обработка окончания видео (для loop)
+            video.addEventListener('ended', () => {
+                if (isHovered) {
+                    video.currentTime = 0;
+                    video.play();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
